@@ -67,7 +67,13 @@ class Ui_MainWindow(QWidget):
 			pony.imageSelected.connect(self.select_image)
 			imageListLayout.addWidget(pony)
 		imageList.setMaximumWidth(200)
-		wrapper.addWidget(imageList)
+
+		scrollArea = QScrollArea()
+		scrollArea.setWidget(imageList)
+		scrollArea.setMinimumWidth(220)
+		scrollArea.setMaximumWidth(220)
+
+		wrapper.addWidget(scrollArea)
 
 		self.web = QPonyWebView()
 		self.web.setUrl(QUrl('http://ponychan.net/chan/meta/'))
