@@ -7,6 +7,9 @@ from PyQt4.QtWebKit import QWebView, QWebPage
 
 activeImage = QString()
 
+class QPonyComboBox(QComboBox):
+	pass
+
 class QPony(QLabel):
 	imageSelected = pyqtSignal(QString)
 
@@ -40,6 +43,22 @@ class Ui_MainWindow(QWidget):
 
 		imageList = QWidget()
 		imageListLayout = QVBoxLayout(imageList)
+
+		imageListLayout.addWidget(QLabel('Emotion:'))
+		emotion = QPonyComboBox()
+		emotion.addItems(['any', 'determination', 'fear', 'happy'])
+		imageListLayout.addWidget(emotion)
+
+		imageListLayout.addWidget(QLabel('Captioned:'))
+		captioned = QPonyComboBox()
+		captioned.addItems(['any', 'yes', 'no'])
+		imageListLayout.addWidget(captioned)
+
+		imageListLayout.addWidget(QLabel('Character:'))
+		character = QPonyComboBox()
+		character.addItems(['any', 'Applejack', 'Pinkie Pie', 'Spike'])
+		imageListLayout.addWidget(character)
+
 		for ponyImage in [
 			'86200554077f4b74a643b1672060952c.png',
 			'fbed97882ec2007d53125e4a03183d1b.gif',
