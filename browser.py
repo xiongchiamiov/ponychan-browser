@@ -5,13 +5,23 @@ from PyQt4.QtCore import QUrl, Qt, SIGNAL, SLOT, pyqtSignal, pyqtSlot, QString
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebView, QWebPage
 
-activeImage = QString()
+activeImage = None
 
 class QPonyComboBox(QComboBox):
 	pass
 
-class QPony(QLabel):
-	imageSelected = pyqtSignal(QString)
+class QPonyWrapper(QLabel):
+	'''
+	This class exists merely because `QPony` needs to reference itself before
+	it's defined.  PyQT being as Pythonic as it is, there's no way to truly do
+	that, so we reference this instead, and inherit `QPony` from this.
+
+	So, there's no reason to ever use instatiate this class.
+	'''
+	pass
+
+class QPony(QPonyWrapper):
+	imageSelected = pyqtSignal(QPonyWrapper)
 
 	def __init__(self, name, parent=None):
 		QLabel.__init__(self, parent)
@@ -23,7 +33,12 @@ class QPony(QLabel):
 	
 	@pyqtSlot()
 	def mousePressEvent(self, event):
-		self.imageSelected.emit(self.name)
+		self.imageSelected.emit(self)
+
+	def invert(self):
+		image = self.pixmap().toImage()
+		image.invertPixels()
+		self.setPixmap(QPixmap.fromImage(image))
 
 class QPonyWebView(QWebView):
 	def __init__(self, parent=None):
@@ -33,7 +48,10 @@ class QPonyWebView(QWebView):
 class QPonyWebPage(QWebPage):
 	def chooseFile(self, originatingFrame, oldFile):
 		global activeImage
-		return activeImage
+		if activeImage:
+			return activeImage.name
+		else:
+			return ''
 
 class Ui_MainWindow(QWidget):
 	def __init__(self, parent=None):
@@ -81,14 +99,12 @@ class Ui_MainWindow(QWidget):
 
 		self.setLayout(wrapper)
 	
-	def select_image(self, name):
-		#frame = self.web.page().mainFrame()
-		#html = frame.toHtml()
-		#print unicode(html)
-		#html.replace('type="file"', 'value="file://%s"' % name)
-		#frame.setHtml(html, QUrl('http://ponychan.net/chan/meta/'))
+	def select_image(self, ponyImage):
 		global activeImage
-		activeImage = name
+		if activeImage:
+			activeImage.invert()
+		activeImage = ponyImage
+		activeImage.invert()
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
