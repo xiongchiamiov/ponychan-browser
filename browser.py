@@ -40,6 +40,14 @@ class QPony(QPonyWrapper):
 		image.invertPixels()
 		self.setPixmap(QPixmap.fromImage(image))
 
+class QPonyClearSelectionButton(QPushButton):
+	@pyqtSlot()
+	def mousePressEvent(self, event):
+		global activeImage
+		if activeImage:
+			activeImage.invert()
+		activeImage = None
+
 class QPonyWebView(QWebView):
 	def __init__(self, parent=None):
 		QWebView.__init__(self, parent)
@@ -77,6 +85,7 @@ class Ui_MainWindow(QWidget):
 		character.addItems(['any', 'Applejack', 'Pinkie Pie', 'Spike'])
 		imageListLayout.addWidget(character)
 
+		imageListLayout.addWidget(QPonyClearSelectionButton('Clear Selection'))
 		for ponyImage in [
 			'86200554077f4b74a643b1672060952c.png',
 			'fbed97882ec2007d53125e4a03183d1b.gif',
