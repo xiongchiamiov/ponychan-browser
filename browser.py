@@ -51,7 +51,7 @@ class QPonyWebPage(QWebPage):
 		if activeImage:
 			return activeImage.name
 		else:
-			return ''
+			return QFileDialog.getOpenFileName()
 
 class Ui_MainWindow(QWidget):
 	def __init__(self, parent=None):
